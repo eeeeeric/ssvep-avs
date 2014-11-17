@@ -1,0 +1,38 @@
+# The desired frequency for the left/right side of the clip.
+# The output is 60 fps, so for best results, you will want to choose a 
+# frequency that is a factor of 30.
+left_freq  = 6
+right_freq = 10
+
+# Calculate how many frames to display before switching colors
+num_frames_left  = 60/(left_freq*2)
+num_frames_right = 60/(right_freq*2)
+
+# Initialize empty clips for appending
+left_clip = BlankClip(length=0, width=960, height=1080, fps=60, color=$FFFFFF)
+right_clip = BlankClip(length=0, width=960, height=1080, fps=60, color=$FFFFFF)
+
+# Generate 60 frames worth of output
+for (i = 0, left_freq*2-1) {
+    left_clip = left_clip + BlankClip(length=num_frames_left, width=960, height=1080, fps=60, color=(i%2 == 0) ? $FFFFFF : $000000)
+}
+for (i = 0, right_freq*2-1) {
+    right_clip = right_clip + BlankClip(length=num_frames_right, width=960, height=1080, fps=60, color=(i%2 == 0) ? $FFFFFF : $000000)
+}
+
+# Stack the left and right eyes together
+final = StackHorizontal(left_clip, right_clip)
+
+# Add epilepsy warning with countdown (5 seconds)
+epilepsy_warning = BlankClip(length=300, width=1920, height=1080, fps=60, color=$000000).Subtitle( \
+        "EPILEPSY WARNING!\n\n\n" + \
+        "A few people may experience epileptic seizures when viewing flashing lights.", \
+        size=48, align=5, lsp=10)\
+        .Subtitle("5", align=8, size=72, first_frame=0, last_frame=59)\
+        .Subtitle("4", align=8, size=72, first_frame=60, last_frame=119)\
+        .Subtitle("3", align=8, size=72, first_frame=120, last_frame=179)\
+        .Subtitle("2", align=8, size=72, first_frame=180, last_frame=239)\
+        .Subtitle("1", align=8, size=72, first_frame=240)
+
+# Loop forever (almost). Loop(repetitions) if you want to restrict
+epilepsy_warning + Loop(final)
