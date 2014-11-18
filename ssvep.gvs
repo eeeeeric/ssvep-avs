@@ -34,5 +34,6 @@ epilepsy_warning = BlankClip(length=300, width=1920, height=1080, fps=60, color=
         .Subtitle("2", align=8, size=72, first_frame=180, last_frame=239)\
         .Subtitle("1", align=8, size=72, first_frame=240)
 
-# Loop forever (almost). Loop(repetitions) if you want to restrict
+# Loop forever (almost). Use `Loop(final, repetitions)` if you want to restrict
+# the number of loops. Each loop lasts 1 second.
 epilepsy_warning + Loop(final)
